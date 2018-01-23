@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTDMapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Vo.UserMapper">
+    <resultMap id="UserResult" type="Vo.User">
+        <id property="id" column="id"></id>
+        <result property="Username" column="username"></result>
+        <result property="password" column="password"></result>
+    </resultMap>
+    <select id="getByUserName" parameterType="String" resultMap="UserResult">
+        SELECT * FROM  t_user where username=#{username}
+    </select>
+    <select id="getRoles" parameterType="String" resultType="String">
+        SELECT r.rolename from t_user u,t_role r where u.roleid=r.id and u.username=#{username}
+    </select>
+    <select id="getPermissions" parameterType="String" resultType="String">
+        SELECT p.permissionname from t_user u,t_role r,t_permission p where u.roleid=r.id and r.id=p.roleid and u.username=#{username}
+    </select>
+</mapper>
