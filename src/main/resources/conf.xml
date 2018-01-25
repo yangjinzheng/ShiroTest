@@ -9,8 +9,8 @@
         <package name="Vo"/>
 
     </typeAliases>
-    <mappers>
-        <!--所有mapper文件-->
-        <mapper resource="Mappers/UserMapper.xml"/>
-    </mappers>
+    <!--<mappers>-->
+        <!--&lt;!&ndash;所有mapper文件&ndash;&gt;-->
+        <!--<mapper resource="Mappers/UserMapper.xml"/>-->
+    <!--</mappers>-->
 </configuration>

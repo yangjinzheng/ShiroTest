@@ -3,7 +3,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTDMapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="Vo.UserMapper">
+<mapper namespace="Dao.UserDao">
     <resultMap id="UserResult" type="Vo.User">
         <id property="id" column="id"></id>
         <result property="Username" column="username"></result>

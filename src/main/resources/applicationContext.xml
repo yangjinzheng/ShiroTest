@@ -29,14 +29,28 @@
     <!--配置工厂-->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="datasource"/>
+        <!-- 自动扫描mappers.xml文件 -->
+        <property name="mapperLocations" value="classpath:Mappers/*.xml"/>
         <property name="configLocation" value="classpath:conf.xml"/>
     </bean>
-    <bean id="Userdao" class="Dao.Impl.UserDaoImpl">
-        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="Dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
     </bean>
-    <bean id="userService" class="Service.Impl.UserServiceImpl">
-        <property name="userDao" ref="Userdao"/>
+    <!-- 事务管理 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="datasource"/>
     </bean>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--<bean id="Userdao" class="Dao.Impl.UserDaoImpl">-->
+        <!--<property name="sqlSessionFactory" ref="sqlSessionFactory"/>-->
+    <!--</bean>-->
+    <!--<bean id="userService" class="Service.Impl.UserServiceImpl">-->
+        <!--<property name="userDao" ref="Userdao"/>-->
+    <!--</bean>-->
     <!--自定义realm-->
     <bean id="myrealm" class="Realm.Myrealm"></bean>
     <!--安全管理器-->
@@ -67,4 +81,32 @@
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager"/>
     </bean>
+    <!-- 配置事务通知属性 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <!-- 定义事务传播属性 -->
+        <tx:attributes>
+            <tx:method name="insert*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />
+            <tx:method name="edit*" propagation="REQUIRED" />
+            <tx:method name="save*" propagation="REQUIRED" />
+            <tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="new*" propagation="REQUIRED" />
+            <tx:method name="set*" propagation="REQUIRED" />
+            <tx:method name="remove*" propagation="REQUIRED" />
+            <tx:method name="delete*" propagation="REQUIRED" />
+            <tx:method name="change*" propagation="REQUIRED" />
+            <tx:method name="check*" propagation="REQUIRED" />
+            <tx:method name="get*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="find*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="load*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="*" propagation="REQUIRED" read-only="true" />
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- 配置事务切面 -->
+    <aop:config>
+        <aop:pointcut id="serviceOperation"
+                      expression="execution(* Service.*.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation" />
+    </aop:config>
 </beans>
